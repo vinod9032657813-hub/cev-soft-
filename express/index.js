@@ -30,14 +30,23 @@ mongoose.connection.on('disconnected', () => {
 });
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173", 
-    "http://localhost:5174", 
-    "http://localhost:5175",
-    "https://ammananna-dxmataj5g-cev.vercel.app",
-    "https://ammananna.vercel.app",
-    /\.vercel\.app$/  // Allow all Vercel preview deployments
-  ],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow all localhost ports
+    if (origin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
+    
+    // Allow Vercel deployments
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Reject other origins
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }))
 app.use(express.json())

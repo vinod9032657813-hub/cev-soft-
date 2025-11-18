@@ -14,12 +14,14 @@ import Checkout from './Pages.js/Checkout.jsx'
 import OrderAll from './Pages.js/OrderAll.jsx'
 import MyOrders from './Pages.js/MyOrders.jsx'
 import VoiceAssistant from './Component.js/VoiceAssistant.jsx'
+import ScrollToTop from './Component.js/ScrollToTop.jsx'
 
 const App = () => {
   
   
   return (
     <div className="flex flex-col min-h-screen"> 
+      <ScrollToTop />
       <Nav/>
       <VoiceAssistant />
       <main className="flex-grow">
