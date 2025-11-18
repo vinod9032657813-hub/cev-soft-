@@ -5,7 +5,9 @@ export const authDataContext = createContext();
 export const AuthContext = createContext();
 
 function AuthContextProvider({ children }) {
-  const serverUrl = "http://localhost:8000";
+  // Use Render backend in production, localhost in development
+  const serverUrl = import.meta.env.VITE_API_URL || 
+                   (window.location.hostname === 'localhost' ? "http://localhost:8000" : "https://cev-soft.onrender.com");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(sessionStorage.getItem('adminToken') || '');
