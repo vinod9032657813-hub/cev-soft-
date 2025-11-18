@@ -15,9 +15,9 @@ const Product = () => {
   const [localSearch, setLocalSearch] = useState('');
 
   useEffect(() => {
-    // Get the latest 10 products or search results
+    // Get all products or search results
     if (products && products.length > 0) {
-      const productsToShow = searchResults.length > 0 ? searchResults : products.slice(0, 10);
+      const productsToShow = searchResults.length > 0 ? searchResults : products;
       setLatestProducts(productsToShow);
       setDisplayProducts(productsToShow);
       
@@ -33,7 +33,7 @@ const Product = () => {
   const clearSearch = () => {
     setSearchResults([]);
     setLocalSearch('');
-    const productsToShow = products.slice(0, 10);
+    const productsToShow = products;
     setLatestProducts(productsToShow);
     setDisplayProducts(productsToShow);
   };

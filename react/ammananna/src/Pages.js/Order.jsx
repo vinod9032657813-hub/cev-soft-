@@ -24,7 +24,10 @@ const Order = () => {
     address: '',
     city: '',
     pincode: '',
-    paymentMethod: 'cod'
+    paymentMethod: 'cod',
+    saiCardNumber: '',
+    saiCardExpiry: '',
+    saiCardCVV: ''
   });
 
   useEffect(() => {
@@ -553,6 +556,47 @@ const Order = () => {
                             <option value="kotak">Kotak Mahindra Bank</option>
                             <option value="other">Other Banks</option>
                           </select>
+                        </div>
+
+                        {/* SAI Card Payment */}
+                        <div className="bg-white p-3 rounded-lg border border-gray-200 hover:border-purple-300 transition-colors">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                              SAI
+                            </div>
+                            <span className="font-semibold text-sm">SAI Card Payment</span>
+                          </div>
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              name="saiCardNumber"
+                              value={orderForm.saiCardNumber}
+                              onChange={handleInputChange}
+                              placeholder="SAI Card Number"
+                              maxLength="16"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                            <div className="grid grid-cols-2 gap-2">
+                              <input
+                                type="text"
+                                name="saiCardExpiry"
+                                value={orderForm.saiCardExpiry}
+                                onChange={handleInputChange}
+                                placeholder="Expiry (MM/YY)"
+                                maxLength="5"
+                                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              />
+                              <input
+                                type="text"
+                                name="saiCardCVV"
+                                value={orderForm.saiCardCVV}
+                                onChange={handleInputChange}
+                                placeholder="CVV"
+                                maxLength="3"
+                                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              />
+                            </div>
+                          </div>
                         </div>
 
                         {/* EMI Options */}

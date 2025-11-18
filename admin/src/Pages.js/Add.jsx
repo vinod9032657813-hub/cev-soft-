@@ -205,6 +205,7 @@ const Add = () => {
               <option value="women">Women</option>
               <option value="kids">Kids</option>
               <option value="beauty">Beauty</option>
+              <option value="SAI">SAI</option>
             </select>
           </div>
 
