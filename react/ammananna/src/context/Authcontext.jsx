@@ -3,7 +3,9 @@ import { createContext } from 'react';
 export const authdatecontext = createContext();
 
 const Authcontext = ({ children }) => {
-    const serverurl = "http://localhost:8000";
+    // Use environment variable for production, fallback to localhost for development
+    const serverurl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    
     const value = {
         serverurl
     };
