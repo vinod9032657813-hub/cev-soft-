@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectdb from "./db.js";
 import mongoose from "mongoose";
+import './keepAlive.js'; // Keep Render awake
 
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";

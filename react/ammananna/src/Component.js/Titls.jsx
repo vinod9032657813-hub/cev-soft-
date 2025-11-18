@@ -9,4 +9,4 @@ const Titls = ({ text1, text2 }) => {
   );
 };
 
-export default Titls;
+export default Titls;         

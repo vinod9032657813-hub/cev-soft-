@@ -5,7 +5,7 @@ export const authdatecontext = createContext();
 const Authcontext = ({ children }) => {
     // Use environment variable for production, fallback to localhost for development
     const serverurl = import.meta.env.VITE_API_URL || 
-                     (window.location.hostname === 'localhost' ? "http://localhost:8000" : "https://cev-soft.onrender.com");
+                     (window.location.hostname === 'localhost' ? "http://localhost:8000" : "https://YOUR-NEW-RENDER-URL.onrender.com");
     
     console.log('🔗 API URL:', serverurl); // Debug log
     
