@@ -3,7 +3,13 @@ import mongoose from "mongoose";
 
 const connectdb = async () => {
     try {
-        await mongoose.connect(process.env.URL, {
+        const mongoURL = process.env.MONGODB_URI || process.env.URL;
+        
+        if (!mongoURL) {
+            throw new Error('MongoDB connection string not found in environment variables');
+        }
+        
+        await mongoose.connect(mongoURL, {
             serverSelectionTimeoutMS: 10000, // 10 second timeout
             socketTimeoutMS: 45000, // 45 second socket timeout
             maxPoolSize: 10, // Maintain up to 10 socket connections
