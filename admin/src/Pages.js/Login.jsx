@@ -22,8 +22,6 @@ const Login = () => {
       const response = await axios.post(`${serverUrl}/api/auth/adminlogin`, {
         email,
         password
-      }, {
-        withCredentials: true
       });
 
       console.log('Login response:', response.data);
