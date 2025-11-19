@@ -23,7 +23,7 @@ const App = () => {
     const wakeUpServer = async () => {
       try {
         console.log('🔄 Waking up server...');
-        await fetch('https://cev-soft.onrender.com');
+        await fetch('https://backend-of-cevsoft.onrender.com');
         console.log('✅ Server wake-up ping sent');
       } catch (error) {
         console.log('⚠️ Server wake-up ping sent (may take 30-60s to respond)');

@@ -1,6 +1,6 @@
 import https from 'https';
 
-const RENDER_URL = 'https://cev-soft.onrender.com';
+const RENDER_URL = 'https://backend-of-cevsoft.onrender.com';
 
 function pingServer() {
     const timestamp = new Date().toLocaleString();
