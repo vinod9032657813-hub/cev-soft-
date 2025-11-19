@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
 import Registration from './Pages.js/Registration.jsx'
 import Login from './Pages.js/Login.jsx'
 import Home from './Pages.js/Home.jsx'
@@ -17,7 +18,25 @@ import VoiceAssistant from './Component.js/VoiceAssistant.jsx'
 import ScrollToTop from './Component.js/ScrollToTop.jsx'
 
 const App = () => {
-  
+  // Wake up the server when app loads
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        console.log('🔄 Waking up server...');
+        await fetch('https://cev-soft.onrender.com');
+        console.log('✅ Server wake-up ping sent');
+      } catch (error) {
+        console.log('⚠️ Server wake-up ping sent (may take 30-60s to respond)');
+      }
+    };
+
+    wakeUpServer();
+
+    // Ping server every 10 minutes while user is on the site
+    const interval = setInterval(wakeUpServer, 600000); // 10 minutes
+
+    return () => clearInterval(interval);
+  }, []);
   
   return (
     <div className="flex flex-col min-h-screen"> 

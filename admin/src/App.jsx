@@ -1,5 +1,5 @@
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Add from './Pages.js/Add';
 import Home from './Pages.js/Home';
@@ -27,6 +27,28 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const App = () => {
+  // Wake up the server when admin panel loads
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        console.log('🔄 Waking up server...');
+        const response = await fetch('https://cev-soft.onrender.com');
+        if (response.ok) {
+          console.log('✅ Server is awake!');
+        }
+      } catch (error) {
+        console.log('⚠️ Server wake-up ping sent (may take 30-60s to respond)');
+      }
+    };
+
+    wakeUpServer();
+
+    // Ping server every 5 minutes while admin panel is open
+    const interval = setInterval(wakeUpServer, 300000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div>
       <Routes>
