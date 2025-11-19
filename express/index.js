@@ -31,9 +31,10 @@ mongoose.connection.on('disconnected', () => {
 });
 
 app.use(cors({
-  origin: "*",
-  credentials: true
-
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }))
     
 app.use(express.json())
