@@ -9,7 +9,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useContext(authDataContext);
+  const { login, serverUrl } = useContext(authDataContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +18,8 @@ const Login = () => {
 
     try {
       console.log('Attempting login with:', email);
-      const response = await axios.post('http://localhost:8000/api/auth/adminlogin', {
+      console.log('Server URL:', serverUrl);
+      const response = await axios.post(`${serverUrl}/api/auth/adminlogin`, {
         email,
         password
       }, {
