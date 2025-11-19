@@ -30,16 +30,11 @@ mongoose.connection.on('disconnected', () => {
     console.log('Mongoose disconnected');
 });
 
-// CORS configuration - Allow all origins for development and production
 app.use(cors({
-  origin: true, // Allow all origins
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'token']
-}))
+  origin: "*",
+  credentials: true
 
-// Handle preflight requests
-app.options('*', cors())
+}))
     
 app.use(express.json())
 app.use(cookieParser())
@@ -50,24 +45,6 @@ app.use("/api/order",orderRouter)
 
 app.get("/", (req, res) => {
     res.send("hello krisnasri love you ❤️");
-});
-
-// Health check endpoint
-app.get("/health", (req, res) => {
-    res.json({ 
-        status: "ok", 
-        message: "Server is running",
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(500).json({ 
-        success: false, 
-        message: err.message || 'Internal server error' 
-    });
 });
 
 // Connect to database first, then start server
