@@ -31,9 +31,8 @@ mongoose.connection.on('disconnected', () => {
 });
 
 app.use(cors({
-  origin: "*",
+  origin: "https://cev-soft-admin.vercel.app",
   credentials: true
-
 }))
     
 app.use(express.json())
