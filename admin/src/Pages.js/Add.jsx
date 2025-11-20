@@ -78,7 +78,8 @@ const Add = () => {
       });
 
       // Send to backend
-      const response = await axios.post('http://localhost:8000/api/product/addproduct', formData, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await axios.post(`${API_URL}/api/product/addproduct`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
