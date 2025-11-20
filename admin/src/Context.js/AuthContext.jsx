@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from 'react';
 export const authDataContext = createContext();
 
 function AuthContextProvider({ children }) {
-  const serverUrl = "http://localhost:8000";
+  const serverUrl = "https://godbelieve.onrender.com";
   
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
