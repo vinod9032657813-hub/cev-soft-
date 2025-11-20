@@ -1,0 +1,11 @@
+Fix: Rename sidebar.jsx to Sidebar.jsx for Linux/Render.com compatibility
+
+- Fixed case-sensitivity issue causing Render.com build failure
+- Renamed admin/src/Component.js/sidebar.jsx to Sidebar.jsx
+- Import statement already correct: import Sidebar from './Sidebar'
+- Windows is case-insensitive, but Linux (Render.com) requires exact match
+- All diagnostics passing
+- Ready for deployment
+
+This fixes the error:
+"Could not resolve './Sidebar' from 'src/Component.js/Layout.jsx'"
