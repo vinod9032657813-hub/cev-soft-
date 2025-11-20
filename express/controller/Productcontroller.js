@@ -1,5 +1,6 @@
 import uploadoncloudinary from "../config/Cloudinary.js"
 import Product from "../model/Productmodel.js"
+import { clearCache } from "../config/redis.js"
 
 
 export const addproduct = async (req, res) => {
@@ -62,6 +63,9 @@ export const addproduct = async (req, res) => {
         const newProduct = await Product.create(productData);
         console.log("Product created successfully:", newProduct._id);
         
+        // Clear product list cache
+        await clearCache('/api/product/list*');
+        
         return res.status(201).json({success: true, product: newProduct});
     } catch(error) {
         console.log("error in addproduct", error);
@@ -92,6 +96,9 @@ export const removeproduct = async (req,res)=>{
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
+        
+        // Clear product list cache
+        await clearCache('/api/product/list*');
         
         return res.status(200).json({ success: true, message: "Product removed successfully" });
     }catch(error){

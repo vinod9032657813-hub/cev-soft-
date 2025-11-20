@@ -4,10 +4,15 @@ import connectdb from "./db.js";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
 import authRoutes from "./routes/authRoutes.js";
 import userRouter from "./routes/UserRoutes.js";
 import productRoute from "./routes/ProductRoute.js";
 import orderRouter from "./routes/OrderRoutes.js";
+import { connectRedis } from "./config/redis.js";
+import { apiLimiter, authLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
 
@@ -27,18 +32,44 @@ mongoose.connection.on('disconnected', () => {
     console.log('Mongoose disconnected');
 });
 
-// Middleware
+// Security with Helmet
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable for API
+    crossOriginEmbedderPolicy: false
+}));
+
+// Compression for responses
+app.use(compression());
+
+// Logging
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+} else {
+    app.use(morgan('dev'));
+}
+
+// Trust proxy (important for Render.com)
+app.set('trust proxy', 1);
+
+// Disable x-powered-by
+app.disable('x-powered-by');
+
+// CORS Middleware
 app.use(cors({
     origin: process.env.FRONTEND_URL || "*",
     credentials: true
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body Parser Middleware with limits
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+// Rate limiting
+app.use('/api/', apiLimiter);
+
 // API Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/user", userRouter);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRouter);
@@ -60,15 +91,44 @@ app.use((req, res) => {
     });
 });
 
-// Connect to database first, then start server
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || 'Internal server error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully...');
+    mongoose.connection.close(() => {
+        console.log('MongoDB connection closed');
+        process.exit(0);
+    });
+});
+
+// Connect to database and Redis, then start server
 const startServer = async () => {
     try {
+        console.log('🚀 Starting server...');
+        
+        // Connect to MongoDB
         await connectdb();
+        console.log('✅ MongoDB connected');
+        
+        // Connect to Redis (optional)
+        await connectRedis();
+        
+        // Start server
         app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+            console.log(`✅ Server running on port ${port}`);
+            console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
         });
     } catch (error) {   
-        console.error('Failed to start server:', error);
+        console.error('❌ Failed to start server:', error);
         process.exit(1);
     }
 };
