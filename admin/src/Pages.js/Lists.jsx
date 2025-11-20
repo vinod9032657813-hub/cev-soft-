@@ -11,7 +11,8 @@ const Lists = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/api/product/list');
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await axios.get(`${API_URL}/api/product/list`);
       
       if (response.data.success) {
         setProducts(response.data.products);
@@ -30,7 +31,8 @@ const Lists = () => {
   // Remove product function
   const removeProduct = async (productId) => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/product/remove/${productId}`, {}, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await axios.post(`${API_URL}/api/product/remove/${productId}`, {}, {
         withCredentials: true
       });
       
