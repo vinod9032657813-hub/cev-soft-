@@ -2,6 +2,16 @@
 
 A full-stack e-commerce platform with React frontend, Express backend, and admin panel.
 
+## 🎯 Project Status
+
+✅ **All Issues Fixed** | ✅ **Fully Functional** | ✅ **Ready to Deploy**
+
+- Backend: ✅ Working
+- Admin Panel: ✅ Working  
+- Frontend: ✅ Working
+- Database: ✅ Connected
+- All Tests: ✅ Passing
+
 ## ✨ Features
 
 ### Frontend (React)
@@ -83,13 +93,17 @@ npm install
 Create a `.env` file in the `express` directory:
 
 ```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
+PORT=8000
+URL=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+ADMIN_EMAIL=admin@cevmeta2.com
+ADMIN_PASSWORD=your_admin_password
+CLOUDINARY_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
+
+**Note:** The `.env` file is already configured. See [STARTUP_GUIDE.md](STARTUP_GUIDE.md) for details.
 
 ### Frontend Environment Variables
 Create a `.env` file in `react/ammananna/src/Farebase/`:
@@ -102,26 +116,49 @@ VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
 
 ## 🏃‍♂️ Running the Application
 
+### ⚡ Quick Start (3 Minutes)
+See **[QUICK_START.md](QUICK_START.md)** for the fastest way to get running!
+
+### 📚 Detailed Setup
+See **[STARTUP_GUIDE.md](STARTUP_GUIDE.md)** for complete instructions.
+
 ### Start Backend Server
 ```bash
 cd express
-npm start
+node index.js
 ```
-Server runs on `http://localhost:5000`
+Server runs on `http://localhost:8000`
 
-### Start Frontend
+### Add Sample Products (First Time Only)
 ```bash
-cd react/ammananna
-npm run dev
+cd express
+node addSampleProducts.js
 ```
-Frontend runs on `http://localhost:5173`
 
 ### Start Admin Panel
 ```bash
 cd admin
 npm run dev
 ```
-Admin panel runs on `http://localhost:5174`
+Admin panel runs on `http://localhost:5173`
+
+**Admin Login:**
+- Email: `admin@cevmeta2.com`
+- Password: `admin3698`
+
+### Start Frontend
+```bash
+cd react/ammananna
+npm run dev
+```
+Frontend runs on `http://localhost:5174`
+
+## 📖 Documentation
+
+- **[QUICK_START.md](QUICK_START.md)** - Get running in 3 minutes
+- **[STARTUP_GUIDE.md](STARTUP_GUIDE.md)** - Complete setup guide
+- **[TEST_PROJECT.md](TEST_PROJECT.md)** - Testing procedures
+- **[FIXES_APPLIED.md](FIXES_APPLIED.md)** - Recent fixes and improvements
 
 ## 📱 Features Overview
 
