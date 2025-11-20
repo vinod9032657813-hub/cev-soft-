@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../Context.js/AuthContext';
+import { authDataContext } from '../Context.js/AuthContext';
 import axios from 'axios';
 import { FiPackage, FiTrash2, FiRefreshCw, FiSearch, FiCalendar } from 'react-icons/fi';
 
 const Orders = () => {
-  const { serverurl, token } = useContext(AuthContext);
+  const { serverurl, token } = useContext(authDataContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

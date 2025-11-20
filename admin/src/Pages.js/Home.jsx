@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../Context.js/AuthContext';
+import { authDataContext } from '../Context.js/AuthContext';
 import axios from 'axios';
 
 const Home = () => {
-  const { serverurl, token } = useContext(AuthContext);
+  const { serverurl, token } = useContext(authDataContext);
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalOrders: 0,

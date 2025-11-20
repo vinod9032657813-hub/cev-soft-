@@ -2,11 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import connectdb from "./db.js";
 import mongoose from "mongoose";
-import './keepAlive.js'; // Keep Render awake
-
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
-import cors from "cors"
 import userRouter from "./routes/UserRoutes.js";
 import productRoute from "./routes/ProductRoute.js";
 import orderRouter from "./routes/OrderRoutes.js";
@@ -14,7 +12,6 @@ import orderRouter from "./routes/OrderRoutes.js";
 dotenv.config();
 
 const app = express();
-
 const port = process.env.PORT || 3000;
 
 // MongoDB connection event listeners
@@ -23,27 +20,44 @@ mongoose.connection.on('connected', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-    console.log('Mongoose connection error:', err);
+    console.error('Mongoose connection error:', err);
 });
 
 mongoose.connection.on('disconnected', () => {
     console.log('Mongoose disconnected');
 });
 
+// Middleware
 app.use(cors({
-  origin: "https://cev-soft-admin.vercel.app",
-  credentials: true
-}))
-    
-app.use(express.json())
-app.use(cookieParser())
-app.use("/api/auth",authRoutes)
-app.use("/api/user",userRouter)
-app.use("/api/product",productRoute)
-app.use("/api/order",orderRouter)
+    origin: process.env.FRONTEND_URL || "*",
+    credentials: true
+}));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRouter);
+app.use("/api/product", productRoute);
+app.use("/api/order", orderRouter);
+
+// Health check endpoint
 app.get("/", (req, res) => {
-    res.send("hello krisnasri love you ❤️");
+    res.json({ 
+        message: "API is running",
+        status: "success",
+        timestamp: new Date().toISOString()
+    });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ 
+        message: "Route not found",
+        path: req.path
+    });
 });
 
 // Connect to database first, then start server
@@ -53,7 +67,7 @@ const startServer = async () => {
         app.listen(port, () => {
             console.log(`Server running on port ${port}`);
         });
-    } catch (error) {
+    } catch (error) {   
         console.error('Failed to start server:', error);
         process.exit(1);
     }
