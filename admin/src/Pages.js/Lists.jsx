@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { authDataContext } from '../Context.js/AuthContext';
 
 const Lists = () => {
+  const { token, isAuthenticated } = useContext(authDataContext);
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -11,7 +15,7 @@ const Lists = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
       const response = await axios.get(`${API_URL}/api/product/list`);
       
       if (response.data.success) {
@@ -30,22 +34,61 @@ const Lists = () => {
 
   // Remove product function
   const removeProduct = async (productId) => {
+    // Check authentication
+    if (!isAuthenticated || !token) {
+      alert('You must be logged in to remove products. Redirecting to login...');
+      navigate('/login');
+      return;
+    }
+
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const response = await axios.post(`${API_URL}/api/product/remove/${productId}`, {}, {
-        withCredentials: true
-      });
+      console.log('=== DELETE PRODUCT REQUEST ===');
+      console.log('Product ID:', productId);
+      console.log('Token exists:', !!token);
+      console.log('Token preview:', token ? token.substring(0, 30) + '...' : 'NO TOKEN');
+      console.log('Is Authenticated:', isAuthenticated);
+      
+      const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
+      console.log('API URL:', API_URL);
+      console.log('Full URL:', `${API_URL}/api/product/remove/${productId}`);
+      
+      const response = await axios.post(
+        `${API_URL}/api/product/remove/${productId}`, 
+        {}, 
+        {
+          headers: {
+            'token': token,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log('=== DELETE RESPONSE ===');
+      console.log('Status:', response.status);
+      console.log('Data:', response.data);
       
       if (response.data.success) {
-        // Remove product from local state
         setProducts(products.filter(product => product._id !== productId));
         alert('Product removed successfully!');
       } else {
-        alert('Failed to remove product');
+        alert('Failed to remove product: ' + (response.data.message || 'Unknown error'));
       }
     } catch (error) {
-      console.error('Error removing product:', error);
-      alert('Error removing product');
+      console.error('=== DELETE ERROR ===');
+      console.error('Error:', error);
+      console.error('Response:', error.response);
+      console.error('Status:', error.response?.status);
+      console.error('Data:', error.response?.data);
+      console.error('Message:', error.message);
+      
+      const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+      
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        alert(`Authentication failed: ${errorMessage}\n\nPlease log out and log in again.`);
+        navigate('/login');
+      } else {
+        alert(`Error removing product: ${errorMessage}`);
+      }
     }
   };
 

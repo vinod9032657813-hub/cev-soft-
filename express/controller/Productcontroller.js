@@ -91,11 +91,23 @@ console.log("error in listproduct", error);
 export const removeproduct = async (req,res)=>{
     try{
         let {id} = req.params;
+        
+        console.log('Remove product request received');
+        console.log('Product ID:', id);
+        console.log('Admin:', req.admin?.email);
+        
+        if (!id) {
+            return res.status(400).json({ success: false, message: "Product ID is required" });
+        }
+        
         const product = await Product.findByIdAndDelete(id);
         
         if (!product) {
+            console.log('Product not found with ID:', id);
             return res.status(404).json({ success: false, message: "Product not found" });
         }
+        
+        console.log('Product removed successfully:', product.name);
         
         // Clear product list cache
         await clearCache('/api/product/list*');
@@ -103,6 +115,6 @@ export const removeproduct = async (req,res)=>{
         return res.status(200).json({ success: true, message: "Product removed successfully" });
     }catch(error){
         console.log("error in removeproduct", error);
-        return res.status(400).json({ success: false, message: "error in removeproduct" });
+        return res.status(500).json({ success: false, message: `Error removing product: ${error.message}` });
     }
 }

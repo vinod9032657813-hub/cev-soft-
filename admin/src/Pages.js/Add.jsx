@@ -78,7 +78,7 @@ const Add = () => {
       });
 
       // Send to backend
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
       const response = await axios.post(`${API_URL}/api/product/addproduct`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

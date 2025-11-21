@@ -54,10 +54,31 @@ app.set('trust proxy', 1);
 // Disable x-powered-by
 app.disable('x-powered-by');
 
-// CORS Middleware
+// CORS Middleware - Allow multiple origins
+const allowedOrigins = [
+    'https://admin-cevsoft.onrender.com',
+    'https://ammananna-ivyrqn0uf-cev.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "*",
-    credentials: true
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.FRONTEND_URL === "*") {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(null, true); // Allow anyway for now
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 
 // Body Parser Middleware with limits
