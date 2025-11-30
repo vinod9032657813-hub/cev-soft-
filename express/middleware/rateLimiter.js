@@ -27,7 +27,7 @@ export const authLimiter = rateLimit({
 // Product creation limiter
 export const createLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 20, // 20 creates per hour
+    max: 50, // 50 creates per hour
     message: {
         success: false,
         message: 'Too many create requests, please try again later.'
