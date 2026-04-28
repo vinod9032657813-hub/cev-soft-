@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: godbelieve
+    runtime: node
+    rootDir: express
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
