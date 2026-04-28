@@ -200,7 +200,7 @@ const Checkout = () => {
     } else {
       // Cash on Delivery
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
+        const API_URL = import.meta.env.VITE_API_URL || 'https://backend-of-cevsoft.onrender.com';
         const response = await fetch(`${API_URL}/api/order/place`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
