@@ -11,13 +11,21 @@ function AuthContextProvider({ children }) {
   
   useEffect(() => {
     const savedToken = localStorage.getItem('adminToken');
-    
     if (savedToken) {
       setToken(savedToken);
       setIsAuthenticated(true);
     }
-    
     setLoading(false);
+
+    // Wake up backend on load
+    fetch(`${serverUrl}/`).catch(() => {});
+
+    // Keep backend alive every 10 minutes
+    const keepAlive = setInterval(() => {
+      fetch(`${serverUrl}/`).catch(() => {});
+    }, 10 * 60 * 1000);
+
+    return () => clearInterval(keepAlive);
   }, []);
 
   const login = (newToken) => {

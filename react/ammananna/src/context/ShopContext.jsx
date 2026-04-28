@@ -33,6 +33,11 @@ const ShopContext = ({ children }) => {
 
     useEffect(() => {
         getProducts();
+        // Keep backend alive every 10 minutes
+        const keepAlive = setInterval(() => {
+            fetch(serverurl + '/').catch(() => {});
+        }, 10 * 60 * 1000);
+        return () => clearInterval(keepAlive);
     }, []);
 
     // Save cart to localStorage whenever it changes
