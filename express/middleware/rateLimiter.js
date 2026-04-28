@@ -15,7 +15,7 @@ export const apiLimiter = rateLimit({
 // Strict limiter for auth routes
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 requests per windowMs
+    max: 50, // 50 requests per windowMs
     message: {
         success: false,
         message: 'Too many login attempts, please try again after 15 minutes.'
