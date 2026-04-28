@@ -66,8 +66,9 @@ const Checkout = () => {
     }));
   };
 
-  const handleRazorpayPayment = () => {
+  const handleRazorpayPayment = async () => {
     const totalAmount = getCartAmount();
+    const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
 
     if (!razorpayLoaded || typeof window.Razorpay === 'undefined') {
       alert('Razorpay is loading... Please try again in a moment.');
@@ -75,66 +76,116 @@ const Checkout = () => {
       return;
     }
 
-    // Ensure amount is valid
-    const amountInPaise = Math.round(totalAmount * 100);
-    console.log('Total Amount:', totalAmount, 'Amount in Paise:', amountInPaise);
-
-    if (amountInPaise <= 0) {
+    if (totalAmount <= 0) {
       alert('Invalid amount. Please check your cart.');
       setIsProcessing(false);
       return;
     }
-    
-    const options = {
-      key: 'rzp_test_YOUR_KEY_ID', // ⚠️ IMPORTANT: Replace with YOUR Razorpay Key ID from https://dashboard.razorpay.com/app/keys
-      amount: amountInPaise, // Amount in paise
-      currency: 'INR',
-      name: 'Cen Meta',
-      description: 'Order Payment',
-      image: '/logo.png',
-      handler: function (response) {
-        // Payment successful callback
-        console.log('✅ Payment Success:', response);
-        alert(`Payment Successful! 🎉\n\nPayment ID: ${response.razorpay_payment_id}\n\nThank you for your purchase!`);
-        setIsProcessing(false);
-        navigate('/');
-      },
-      prefill: {
-        name: `${orderForm.firstName} ${orderForm.lastName}`,
-        email: orderForm.email,
-        contact: orderForm.phone
-      },
-      notes: {
-        address: `${orderForm.address}, ${orderForm.city}, ${orderForm.state}, ${orderForm.pincode}`
-      },
-      theme: {
-        color: '#9333ea'
-      },
-      modal: {
-        ondismiss: function() {
-          console.log('❌ Payment cancelled by user');
-          setIsProcessing(false);
-        }
-      }
-    };
-
-    console.log('Razorpay Options:', options);
 
     try {
+      // Step 1: Get Razorpay key from backend
+      const keyResponse = await fetch(`${API_URL}/api/payment/razorpay-key`);
+      const keyData = await keyResponse.json();
+      
+      if (!keyData.success) {
+        throw new Error('Failed to get Razorpay key');
+      }
+
+      // Step 2: Create order on backend
+      const orderResponse = await fetch(`${API_URL}/api/payment/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: totalAmount,
+          currency: 'INR',
+          receipt: `order_${Date.now()}`
+        })
+      });
+
+      const orderData = await orderResponse.json();
+      
+      if (!orderData.success) {
+        throw new Error(orderData.message || 'Failed to create order');
+      }
+
+      console.log('Razorpay order created:', orderData.order.id);
+
+      // Step 3: Open Razorpay checkout
+      const options = {
+        key:'rzp_live_RiQ2dpNmEBTDh8',
+        secret:'ItgoQKynf3EiBvdBhkdhBL86',
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'Cen Meta',
+        description: 'Order Payment',
+        order_id: orderData.order.id,
+        handler: async function (response) {
+          console.log('Payment response:', response);
+          
+          // Step 4: Verify payment on backend
+          try {
+            const verifyResponse = await fetch(`${API_URL}/api/payment/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData: {
+                  items: cartData,
+                  amount: totalAmount,
+                  address: orderForm
+                }
+              })
+            });
+
+            const verifyData = await verifyResponse.json();
+            
+            if (verifyData.success) {
+              alert(`✅ Payment Successful!\n\nPayment ID: ${response.razorpay_payment_id}\nOrder ID: ${verifyData.orderId}\n\nThank you for your purchase!`);
+              navigate('/orders');
+            } else {
+              alert('Payment verification failed. Please contact support.');
+            }
+          } catch (error) {
+            console.error('Verification error:', error);
+            alert('Payment verification failed. Please contact support with Payment ID: ' + response.razorpay_payment_id);
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: `${orderForm.firstName} ${orderForm.lastName}`,
+          email: orderForm.email,
+          contact: orderForm.phone
+        },
+        notes: {
+          address: `${orderForm.address}, ${orderForm.city}, ${orderForm.state}, ${orderForm.pincode}`
+        },
+        theme: {
+          color: '#9333ea'
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('Payment cancelled by user');
+            alert('Payment cancelled');
+            setIsProcessing(false);
+          }
+        }
+      };
+
       const rzp = new window.Razorpay(options);
       
       rzp.on('payment.failed', function (response) {
-        console.error('❌ Payment Failed:', response.error);
-        const errorMsg = response.error?.description || response.error?.reason || 'Unknown error';
-        alert(`Payment Failed!\n\nError: ${errorMsg}\n\nPlease try again or contact support.`);
+        console.error('Payment failed:', response.error);
+        alert(`❌ Payment Failed!\n\n${response.error.description}\n\nPlease try again.`);
         setIsProcessing(false);
       });
 
       rzp.open();
-      console.log('Razorpay modal opened');
     } catch (error) {
-      console.error('❌ Razorpay Error:', error);
-      alert(`Error: ${error.message}\n\nPlease check your Razorpay Key ID or try again.`);
+      console.error('Razorpay error:', error);
+      alert(`Error: ${error.message}`);
       setIsProcessing(false);
     }
   };
@@ -147,12 +198,34 @@ const Checkout = () => {
     if (orderForm.paymentMethod === 'razorpay') {
       handleRazorpayPayment();
     } else {
-      // Cash on Delivery or other payment methods
-      setTimeout(() => {
-        alert('Order placed successfully! 🎉');
+      // Cash on Delivery
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'https://godbelieve.onrender.com';
+        const response = await fetch(`${API_URL}/api/order/place`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: cartData,
+            amount: getCartAmount(),
+            address: orderForm,
+            paymentMethod: 'COD'
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('✅ Order placed successfully!\n\nYou will pay cash on delivery.');
+          navigate('/orders');
+        } else {
+          alert('Failed to place order: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Order error:', error);
+        alert('Error placing order: ' + error.message);
+      } finally {
         setIsProcessing(false);
-        navigate('/');
-      }, 2000);
+      }
     }
   };
 

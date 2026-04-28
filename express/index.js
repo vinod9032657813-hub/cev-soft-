@@ -1,5 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+
+dotenv.config();
+
 import connectdb from "./db.js";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
@@ -11,10 +14,9 @@ import authRoutes from "./routes/authRoutes.js";
 import userRouter from "./routes/UserRoutes.js";
 import productRoute from "./routes/ProductRoute.js";
 import orderRouter from "./routes/OrderRoutes.js";
+import paymentRouter from "./routes/PaymentRoutes.js";
 import { connectRedis } from "./config/redis.js";
 import { apiLimiter, authLimiter } from "./middleware/rateLimiter.js";
-
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -94,6 +96,7 @@ app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/user", userRouter);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRouter);
+app.use("/api/payment", paymentRouter);
 
 // Health check endpoint
 app.get("/", (req, res) => {
