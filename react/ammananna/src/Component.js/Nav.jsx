@@ -117,6 +117,23 @@ const Nav = () => {
         </div>
       </nav>
 
+      {/* Category Links Bar */}
+      <div className="bg-gray-800 border-t border-gray-700 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="hidden md:flex items-center space-x-1 overflow-x-auto py-2">
+            {['Fashion', 'Electronics', 'Mobile', 'Home', 'Dresses', 'Books', 'Sports'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => navigate(`/collection?category=${cat.toLowerCase()}`)}
+                className="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-1.5 text-sm font-medium rounded whitespace-nowrap transition-colors duration-200"
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Bottom Navigation (YouTube Style) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-50">
         <div className="flex justify-around items-center py-2">
