@@ -62,8 +62,10 @@ const allowedOrigins = [
     'https://ammananna-ivyrqn0uf-cev.vercel.app',
     'http://localhost:5173',
     'http://localhost:5174',
+    'http://localhost:5175',
     'http://localhost:3000',
-    process.env.FRONTEND_URL
+    process.env.FRONTEND_URL,
+    process.env.ADMIN_URL
 ].filter(Boolean);
 
 app.use(cors({
@@ -128,8 +130,10 @@ app.use((err, req, res, next) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down gracefully...');
-    mongoose.connection.close(() => {
+    mongoose.connection.close().then(() => {
         console.log('MongoDB connection closed');
+        process.exit(0);
+    }).catch(() => {
         process.exit(0);
     });
 });
