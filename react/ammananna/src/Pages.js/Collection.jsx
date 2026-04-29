@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react';
 import { ShopDataContext } from '../context/ShopContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FiFilter, FiX, FiShoppingCart } from 'react-icons/fi';
 
 const Collection = () => {
   const { products, currency, addToCart } = useContext(ShopDataContext);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -13,6 +14,14 @@ const Collection = () => {
   const [priceRange, setPriceRange] = useState('all');
   const [sortBy, setSortBy] = useState('default');
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+
+  // Read URL params on load
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    const sub = searchParams.get('subcategory');
+    if (cat) setSelectedCategories([cat]);
+    if (sub) setSelectedSubcategories([sub]);
+  }, [searchParams]);
 
   // Get unique categories and subcategories
   const categories = [...new Set(products.map(p => p.category))].filter(Boolean);
