@@ -185,10 +185,14 @@ const Collection = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            Our Collection
+            {selectedCategories.length === 1
+              ? `${selectedCategories[0].charAt(0).toUpperCase() + selectedCategories[0].slice(1)} Collection`
+              : selectedSubcategories.length === 1
+              ? `${selectedSubcategories[0].charAt(0).toUpperCase() + selectedSubcategories[0].slice(1)}`
+              : 'Our Collection'}
           </h1>
           <p className="text-center text-gray-600 max-w-2xl mx-auto">
-            Discover our amazing products. Filter by category, price, and more to find exactly what you need.
+            {filteredProducts.length} products found
           </p>
         </div>
 
@@ -231,7 +235,7 @@ const Collection = () => {
               </select>
             </div>
 
-            {/* Products Grid */}
+            {/* Products Grid - 3 per row */}
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map(product => (
@@ -253,9 +257,13 @@ const Collection = () => {
                           ⭐ Bestseller
                         </div>
                       )}
+                      <div className="absolute top-4 left-4 bg-white bg-opacity-90 text-purple-600 px-2 py-1 rounded-full text-xs font-bold capitalize">
+                        {product.category}
+                      </div>
                     </div>
                     
                     <div className="p-4">
+                      <p className="text-xs text-gray-400 capitalize mb-1">{product.subcategory}</p>
                       <h3 
                         className="font-bold text-lg text-gray-800 mb-2 cursor-pointer hover:text-purple-600 transition-colors line-clamp-2"
                         onClick={() => navigate(`/product/${product._id}`)}
@@ -271,11 +279,6 @@ const Collection = () => {
                         <span className="text-2xl font-bold text-purple-600">
                           {currency}{product.price}
                         </span>
-                        {product.category && (
-                          <span className="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">
-                            {product.category}
-                          </span>
-                        )}
                       </div>
 
                       <button
