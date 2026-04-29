@@ -121,13 +121,24 @@ const Nav = () => {
       <div className="bg-gray-800 border-t border-gray-700 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden md:flex items-center space-x-1 overflow-x-auto py-2">
-            {['Fashion', 'Electronics', 'Mobile', 'Home', 'Dresses', 'Books', 'Sports'].map((cat) => (
+            {[
+              { label: 'All Products', path: '/collection' },
+              { label: 'Men', path: '/collection?category=men' },
+              { label: 'Women', path: '/collection?category=women' },
+              { label: 'Kids', path: '/collection?category=kids' },
+              { label: 'Beauty', path: '/collection?category=beauty' },
+              { label: 'SAI', path: '/collection?category=SAI' },
+              { label: 'Bestsellers', path: '/product' },
+              { label: 'My Orders', path: '/my-orders' },
+              { label: 'About', path: '/about' },
+              { label: 'Contact', path: '/cantact' },
+            ].map((item) => (
               <button
-                key={cat}
-                onClick={() => navigate(`/collection?category=${cat.toLowerCase()}`)}
+                key={item.label}
+                onClick={() => navigate(item.path)}
                 className="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-1.5 text-sm font-medium rounded whitespace-nowrap transition-colors duration-200"
               >
-                {cat}
+                {item.label}
               </button>
             ))}
           </div>
