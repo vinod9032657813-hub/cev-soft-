@@ -122,16 +122,17 @@ const Nav = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden md:flex items-center space-x-1 overflow-x-auto py-2">
             {[
-              { label: 'All Products', path: '/collection' },
-              { label: 'Men', path: '/collection?category=men' },
-              { label: 'Women', path: '/collection?category=women' },
-              { label: 'Kids', path: '/collection?category=kids' },
-              { label: 'Beauty', path: '/collection?category=beauty' },
-              { label: 'SAI', path: '/collection?category=SAI' },
-              { label: 'Bestsellers', path: '/product' },
-              { label: 'My Orders', path: '/my-orders' },
-              { label: 'About', path: '/about' },
-              { label: 'Contact', path: '/cantact' },
+              { label: '🛍️ All Products', path: '/collection' },
+              { label: '👔 Men', path: '/collection?category=men' },
+              { label: '👗 Women', path: '/collection?category=women' },
+              { label: '👶 Kids', path: '/collection?category=kids' },
+              { label: '💄 Beauty', path: '/collection?category=beauty' },
+              { label: '🙏 SAI', path: '/collection?category=SAI' },
+              { label: '⭐ Bestsellers', path: '/product' },
+              { label: '📦 My Orders', path: '/my-orders' },
+              { label: '🛒 Cart', path: '/cart' },
+              { label: 'ℹ️ About', path: '/about' },
+              { label: '📞 Contact', path: '/cantact' },
             ].map((item) => (
               <button
                 key={item.label}
